@@ -23,22 +23,27 @@ public class MainPanel extends JPanel implements ChangeListener, ActionListener 
         JLabel sliderLabel = new JLabel("Threshold", JLabel.CENTER);
         sliderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        JRadioButton thresRadioButton = new JRadioButton("Threshold");
         JRadioButton fsRadioButton = new JRadioButton("Floyd-Steinberg", true);
         JRadioButton maeRadioButton = new JRadioButton("Minimised Average Error");
 
+        thresRadioButton.setActionCommand("thres");
         fsRadioButton.setActionCommand("fs");
         maeRadioButton.setActionCommand("mae");
 
+        thresRadioButton.addActionListener(this);
         fsRadioButton.addActionListener(this);
         maeRadioButton.addActionListener(this);
 
 
         ButtonGroup group = new ButtonGroup();
+        group.add(thresRadioButton);
         group.add(fsRadioButton);
         group.add(maeRadioButton);
 
         add(imagePanel);
 
+        add(thresRadioButton);
         add(fsRadioButton);
         add(maeRadioButton);
 
@@ -66,6 +71,8 @@ public class MainPanel extends JPanel implements ChangeListener, ActionListener 
             imagePanel.updateAlgorithm(ImagePanel.FSDithering);
         else if(e.getActionCommand().equals("mae"))
             imagePanel.updateAlgorithm(ImagePanel.JJNDithering);
+        else if(e.getActionCommand().equals("thres"))
+            imagePanel.updateAlgorithm(ImagePanel.ThresholdDithering);
 
         update(this.getGraphics());
     }

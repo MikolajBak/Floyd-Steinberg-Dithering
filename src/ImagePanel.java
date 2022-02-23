@@ -15,6 +15,7 @@ public class ImagePanel extends JPanel {
 
     public static int FSDithering = 0;
     public static int JJNDithering = 1;
+    public static int ThresholdDithering = 2;
 
     public ImagePanel(String fileName) {
         try{
