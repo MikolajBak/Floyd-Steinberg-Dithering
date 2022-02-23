@@ -39,7 +39,7 @@ public class MainPanel extends JPanel implements ChangeListener {
     }
 
     private static void createAndShowGUI() {
-        JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getDefaultDirectory());
         int res = chooser.showOpenDialog(null);
         String imagePath = "imgs/photo.png";
         if(res == JFileChooser.APPROVE_OPTION)
