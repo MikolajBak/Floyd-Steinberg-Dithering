@@ -31,6 +31,8 @@ public class MainPanel extends JPanel implements ChangeListener, ActionListener 
         fsRadioButton.setActionCommand("fs");
         maeRadioButton.setActionCommand("mae");
 
+
+
         thresRadioButton.addActionListener(this);
         fsRadioButton.addActionListener(this);
         maeRadioButton.addActionListener(this);
@@ -41,14 +43,26 @@ public class MainPanel extends JPanel implements ChangeListener, ActionListener 
         group.add(fsRadioButton);
         group.add(maeRadioButton);
 
+
         add(imagePanel);
 
-        add(thresRadioButton);
-        add(fsRadioButton);
-        add(maeRadioButton);
+        Box box = Box.createHorizontalBox();
+        box.add(thresRadioButton);
+        box.add(fsRadioButton);
+        box.add(maeRadioButton);
+
+//        add(thresRadioButton);
+//        add(fsRadioButton);
+//        add(maeRadioButton);
+
+        add(box);
+
+
+
 
         add(thresholdSlider);
         //add(sliderLabel);
+
         setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
 
@@ -95,7 +109,7 @@ public class MainPanel extends JPanel implements ChangeListener, ActionListener 
 
 
 
-        frame.setSize(mainPanel.imagePanel.width + 36, mainPanel.imagePanel.height + 150);
+        frame.setSize(mainPanel.imagePanel.width + 36, mainPanel.imagePanel.height + 100);
         frame.setVisible(true);
 
     }
