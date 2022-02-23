@@ -11,7 +11,7 @@ public class Main extends JFrame implements ChangeListener {
 
         JPanel mainPanel = new JPanel();
 
-        this.imagePanel = new ImagePanel();
+        this.imagePanel = new ImagePanel("imgs/photo.png");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);

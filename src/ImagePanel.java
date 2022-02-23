@@ -10,15 +10,19 @@ public class ImagePanel extends JPanel {
     private BufferedImage image;
     private BufferedImage originalImage;
     private double threshold;
-    public ImagePanel() {
+    public final int width, height;
+
+    public ImagePanel(String fileName) {
         try{
-            this.image = ImageIO.read(new File("imgs/photo.png"));
+            this.image = ImageIO.read(new File(fileName));
             this.originalImage = image;
         } catch(IOException e) {
             System.err.println(e.getMessage());
         }
 
         this.threshold = 0.5;
+        this.width = this.image.getWidth();
+        this.height = this.image.getHeight();
         processImage();
     }
 
@@ -30,6 +34,7 @@ public class ImagePanel extends JPanel {
     public double getThreshold(){
         return threshold;
     }
+
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
