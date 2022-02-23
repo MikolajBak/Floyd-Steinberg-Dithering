@@ -11,7 +11,6 @@ public class MainPanel extends JPanel implements ChangeListener {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
 
-
         imagePanel = new ImagePanel();
 
         JSlider thresholdSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, (int)(imagePanel.getThreshold() * 100));

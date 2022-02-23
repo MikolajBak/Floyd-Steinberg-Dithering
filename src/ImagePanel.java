@@ -12,7 +12,7 @@ public class ImagePanel extends JPanel {
     private double threshold;
     public ImagePanel() {
         try{
-            this.image = ImageIO.read(new File("imgs/Albert-Einstein.jpg"));
+            this.image = ImageIO.read(new File("imgs/photo.png"));
             this.originalImage = image;
         } catch(IOException e) {
             System.err.println(e.getMessage());
@@ -42,8 +42,8 @@ public class ImagePanel extends JPanel {
         final int width = this.image.getWidth();
         final int height = this.image.getHeight();
 
-        for(int x = 0; x < width; x++) {
-            for(int y = 0; y < height; y++) {
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
                 if(x == width - 1 || y == height - 1 || x == 0 || y == 0) {
                     imageArray[x][y] = convertToARGB(255, 0, 0, 0);
                 } else {
