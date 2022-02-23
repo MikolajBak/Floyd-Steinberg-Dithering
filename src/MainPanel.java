@@ -3,8 +3,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Objects;
 
-public class MainPanel extends JPanel implements ChangeListener {
+public class MainPanel extends JPanel implements ChangeListener, ActionListener {
 
     private final ImagePanel imagePanel;
 
@@ -17,10 +20,30 @@ public class MainPanel extends JPanel implements ChangeListener {
         JSlider thresholdSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, (int)(imagePanel.getThreshold() * 100));
         thresholdSlider.addChangeListener(this);
 
+        JLabel sliderLabel = new JLabel("Threshold", JLabel.CENTER);
+        sliderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JRadioButton fsRadioButton = new JRadioButton("Floyd-Steinberg", true);
+        JRadioButton maeRadioButton = new JRadioButton("Minimised Average Error");
+
+        fsRadioButton.setActionCommand("fs");
+        maeRadioButton.setActionCommand("mae");
+
+        fsRadioButton.addActionListener(this);
+        maeRadioButton.addActionListener(this);
+
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(fsRadioButton);
+        group.add(maeRadioButton);
 
         add(imagePanel);
-        add(thresholdSlider);
 
+        add(fsRadioButton);
+        add(maeRadioButton);
+
+        add(thresholdSlider);
+        //add(sliderLabel);
         setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
 
@@ -38,6 +61,15 @@ public class MainPanel extends JPanel implements ChangeListener {
 
     }
 
+    public void actionPerformed(ActionEvent e) {
+        if(e.getActionCommand().equals("fs"))
+            imagePanel.updateAlgorithm(ImagePanel.FSDithering);
+        else if(e.getActionCommand().equals("mae"))
+            imagePanel.updateAlgorithm(ImagePanel.JJNDithering);
+
+        update(this.getGraphics());
+    }
+
     private static void createAndShowGUI() {
         JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getDefaultDirectory());
         int res = chooser.showOpenDialog(null);
@@ -46,14 +78,17 @@ public class MainPanel extends JPanel implements ChangeListener {
             imagePath = chooser.getSelectedFile().getAbsolutePath();
 
 
-        JFrame frame = new JFrame("Floyd-Steinberg");
+        JFrame frame = new JFrame("1-bit Dithering");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         MainPanel mainPanel = new MainPanel(imagePath);
 
         frame.add(mainPanel, BorderLayout.CENTER);
 
-        frame.setSize(mainPanel.imagePanel.width + 36, mainPanel.imagePanel.height + 90);
+
+
+
+        frame.setSize(mainPanel.imagePanel.width + 36, mainPanel.imagePanel.height + 150);
         frame.setVisible(true);
 
     }

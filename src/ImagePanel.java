@@ -11,6 +11,10 @@ public class ImagePanel extends JPanel {
     private BufferedImage originalImage;
     private double threshold;
     public final int width, height;
+    private int ditheringType;
+
+    public static int FSDithering = 0;
+    public static int JJNDithering = 1;
 
     public ImagePanel(String fileName) {
         try{
@@ -23,25 +27,30 @@ public class ImagePanel extends JPanel {
         this.threshold = 0.5;
         this.width = this.image.getWidth();
         this.height = this.image.getHeight();
-        processImage();
+        this.ditheringType = ImagePanel.FSDithering;
+        processImage(this.ditheringType);
     }
 
     public void updateThreshold(double threshold) {
         this.threshold = threshold;
-        processImage();
+        processImage(this.ditheringType);
     }
 
     public double getThreshold(){
         return threshold;
     }
 
+    public void updateAlgorithm(int algorithm) {
+        this.ditheringType = algorithm;
+        processImage(this.ditheringType);
+    }
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(this.image, 0, 0, this);
     }
 
-    protected void processImage() {
+    protected void processImage(int ditheringType) {
         int[][] imageArray = imageTo2dArray(originalImage);
 
         final int width = this.image.getWidth();
@@ -49,32 +58,41 @@ public class ImagePanel extends JPanel {
 
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
-                if(x == width - 1 || y == height - 1 || x == 0 || y == 0) {
-                    imageArray[x][y] = convertToARGB(255, 0, 0, 0);
+
+                int[] pixel = convertFromARGB(imageArray[x][y]);
+                pixel = rgbToGreyscale(pixel);
+                int oldPixel = pixel[1];
+                int grey;
+
+                if (pixel[1] / 255.0 > this.threshold) {
+                    grey = 255;
                 } else {
-                    int[] pixel = convertFromARGB(imageArray[x][y]);
-                    pixel = rgbToGreyscale(pixel);
-
-                    int oldPixel = pixel[1];
-
-                    int grey;
-
-                    if (pixel[1] / 255.0 > this.threshold) {
-                        grey = 255;
-                    } else {
-                        grey = 0;
-                    }
-
-                    int error = oldPixel - grey;
-                    imageArray[x + 1][y] = applyError(imageArray[x + 1][y], error * 7. / 16.);
-                    imageArray[x - 1][y + 1] = applyError(imageArray[x - 1][y + 1], error * 3. / 16.);
-                    imageArray[x][y + 1] = applyError(imageArray[x][y + 1], error * 5. / 16.);
-                    imageArray[x + 1][y + 1] = applyError(imageArray[x + 1][y + 1], error * 1. / 16.);
-
-
-                    imageArray[x][y] = convertToARGB(255, grey, grey, grey);
-//                    imageArray[x][y] = grey * 0x22010101;
+                    grey = 0;
                 }
+                int error = oldPixel - grey;
+
+                if(x < width - 1 && y < height - 1 && x > 0 && y > 0 && ditheringType == ImagePanel.FSDithering) {
+                    imageArray[x + 1][y    ] = applyError(imageArray[x + 1][y    ], error * 7. / 16.);
+                    imageArray[x - 1][y + 1] = applyError(imageArray[x - 1][y + 1], error * 3. / 16.);
+                    imageArray[x    ][y + 1] = applyError(imageArray[x    ][y + 1], error * 5. / 16.);
+                    imageArray[x + 1][y + 1] = applyError(imageArray[x + 1][y + 1], error * 1. / 16.);
+                } else if(x < width - 2 && y < height - 2 && x > 1 && y > 1 && ditheringType == ImagePanel.JJNDithering) {
+                    imageArray[x + 1][y    ] = applyError(imageArray[x + 1][y    ], error * 7. / 48.);
+                    imageArray[x + 2][y    ] = applyError(imageArray[x + 2][y    ], error * 5. / 48.);
+                    imageArray[x - 2][y + 1] = applyError(imageArray[x - 2][y + 1], error * 3. / 48.);
+                    imageArray[x - 1][y + 1] = applyError(imageArray[x - 1][y + 1], error * 5. / 48.);
+                    imageArray[x    ][y + 1] = applyError(imageArray[x    ][y + 1], error * 7. / 48.);
+                    imageArray[x + 1][y + 1] = applyError(imageArray[x + 1][y + 1], error * 5. / 48.);
+                    imageArray[x + 2][y + 1] = applyError(imageArray[x + 2][y + 2], error * 3. / 48.);
+                    imageArray[x - 2][y + 2] = applyError(imageArray[x - 2][y + 2], error * 1. / 48.);
+                    imageArray[x - 1][y + 2] = applyError(imageArray[x - 1][y + 2], error * 3. / 48.);
+                    imageArray[x    ][y + 2] = applyError(imageArray[x    ][y + 2], error * 5. / 48.);
+                    imageArray[x + 1][y + 2] = applyError(imageArray[x + 1][y + 2], error * 3. / 48.);
+                    imageArray[x + 2][y + 2] = applyError(imageArray[x + 2][y + 2], error * 1. / 48.);
+                }
+                imageArray[x][y] = convertToARGB(255, grey, grey, grey);
+//                    imageArray[x][y] = grey * 0x22010101;
+
 
             }
         }
