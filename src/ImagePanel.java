@@ -108,6 +108,8 @@ public class ImagePanel extends JPanel {
         final int height = image.getHeight();
         final boolean hasAlphaChannel = image.getAlphaRaster() != null;
 
+        
+
         int[][] result = new int[width][height];
         if (hasAlphaChannel) {
             final int pixelLength = 4;
